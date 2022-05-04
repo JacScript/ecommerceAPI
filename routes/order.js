@@ -7,10 +7,10 @@ const router = express.Router();
 
 //CREATE AN ORDER
 router.post("/",verifyToken, async (req, res)=>{
-    const newOrder = newCart (req.body);
+    const newOrder = new Order (req.body);
 
     try {
-       const savedOrder = await newOrder.save();
+       const savedOrder = await newOrder.save ();
        res.status(200).json(savedOrder);
     }catch(err) {
         res.status(500).json(err);
@@ -77,9 +77,11 @@ router.get("/income",verifyTokenAndAdmin, async(req, res)=>{
                    month: { $month: "$createdAt" },
                    sales: "$amount",
            },
-               $group: {
-                   id: "$month",
-                   total: {$sum: "$sales"}
+          },
+          {
+            $group: {
+                   _id: "$month",
+                   total: {$sum: "$sales"},
                },
         },
        ]);
